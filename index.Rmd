@@ -1,5 +1,5 @@
 ---
-title: "Najważniejsze wydarzenia sesji na warszawskiej giełdzie na godz. 17:00 w dziewięciu wykresach"
+title: "Najważniejsze wydarzenia sesji na warszawskiej giełdzie na godz. 10:05 w dziewięciu wykresach"
 output: html_document
 ---
 
