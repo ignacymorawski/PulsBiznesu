@@ -1,5 +1,5 @@
 ---
-title: "Najważniejsze wydarzenia sesji na warszawskiej giełdzie na godz. 11:00 w dziewięciu wykresach"
+title: "&nbsp;"
 output: html_document
 ---
 
@@ -209,13 +209,13 @@ bp5<-ggplot(data=stock3,aes(x=time,y=change,group=name))+
   theme(panel.spacing = unit(2,"cm"))+
   #theme(panel.grid=element_blank())+
   theme(plot.title = element_text(color = "#EC0108",size=19,face="bold"))+
-  theme(plot.subtitle = element_text(color = "gray23",size=11,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
+  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
   theme(plot.margin=margin(t=10,r=10,b=10,l=10,unit="pt"))+
   xlab("")+
   ylab("zmiana w proc.")+
   scale_x_datetime(labels = date_format("%H:%M", tz="Europe/Berlin"), date_breaks = "3 hours")+
   labs(title="",
-       subtitle=paste0("Indeksy giełdowe w dniu dzisiejszym na godzinę ",godzina,", zmiana procentowa od zamknięcia dnia poprzedniego (notowania 5min)"),
+       subtitle=paste0("Indeksy giełdowe w dniu dzisiejszym na godzinę ",godzina,"\n-zmiana procentowa od zamknięcia dnia poprzedniego (notowania 5min)"),
        caption="źródło: Puls Biznesu, stooq.pl")
 
 ggsave("/Users/ignacymorawski/Documents/SPOTDATA/PB FORECAST/AUTOMATIC/plots/gielda6.png",width=350,height=150,units="mm",bg = "transparent")
@@ -261,11 +261,17 @@ bp<-ggplot(table, aes(area = obroty, fill = color, label=label)) +
   geom_treemap_text(fontface = "italic", 
                     colour = "white", place = "topleft", 
                     padding.x = grid::unit(0.2, "cm"),padding.y = grid::unit(0.2, "cm"),min.size = 1)+
+    theme(plot.title = element_text(color = "#EC0108",size=18,face="bold"))+
+  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
   theme(legend.position = "none")+
   theme(plot.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+
-  labs(title=paste0("Wyniki sesji na rynku głównym z dnia ",format(Sys.Date(),"%d %B"),", z godziny ", godzina),
+  labs(title="",
        subtitle="wielkość pola jest proporcjonalna do obrotów generowanych na spółce",
        caption="źródło: Puls Biznesu")
+
+# labs(title=paste0("Wyniki sesji na rynku głównym z dnia ",format(Sys.Date(),"%d %B"),", z godziny ", godzina),
+#        subtitle="wielkość pola jest proporcjonalna do obrotów generowanych na spółce",
+#        caption="źródło: Puls Biznesu")
 
 ggsave("/Users/ignacymorawski/Documents/SPOTDATA/PB FORECAST/AUTOMATIC/plots/gielda1.png",width=350,height=150,units="mm",bg = "transparent")
 
@@ -310,22 +316,23 @@ bp2<-ggplot(table2, aes(area = obroty, fill = color, label=label)) +
   geom_treemap_text(fontface = "italic", 
                     colour = "white", place = "topleft", 
                     padding.x = grid::unit(0.2, "cm"),padding.y = grid::unit(0.2, "cm"),min.size = 1)+
+      theme(plot.title = element_text(color = "#EC0108",size=18,face="bold"))+
+  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
   theme(legend.position = "none")+
   theme(plot.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+
-  labs(title=paste0("Wyniki sesji na New Connect z dnia ",format(Sys.Date(),"%d %B"),", z godziny ", godzina),
+  labs(title="",
        subtitle="wielkość pola jest proporcjonalna do obrotów generowanych na spółce",
        caption="źródło: Puls Biznesu")
+
+  # labs(title=paste0("Wyniki sesji na New Connect z dnia ",format(Sys.Date(),"%d %B"),", z godziny ", godzina),
+  #      subtitle="wielkość pola jest proporcjonalna do obrotów generowanych na spółce",
+  #      caption="źródło: Puls Biznesu")
 
 #png("/Users/ignacymorawski/Documents/SPOTDATA/PB FORECAST/AUTOMATIC/plots/gielda1b.png",width=350,height=180,units="mm",bg = "white",res=300)
 print(bp2)
 #dev.off()
 
 ```
-<br></br>
-<br/><br/>
-<br/><br/>
-
-
 
 ```{r, echo=FALSE, warning=FALSE,error=FALSE,message=FALSE,fig.width=11,fig.height=8}
 #### 3. Kto zyskuje, a kto traci (przy dużych obrotach)
@@ -467,7 +474,7 @@ m3<-m2z %>%
   select(c(1,3,5,6,7,8))
 
 m4<-bind_rows(
- m3 %>% select(c(1,3,5)) %>% `colnames<-`(c("spolka","ratio","spread")) %>% mutate(theme="O ile razy* obroty akcjami spółki\nprzekraczały jej średnią z roku") %>% mutate(label=paste0(round(ratio,1),"x")) %>% mutate(color=4),
+ m3 %>% select(c(1,3,5)) %>% `colnames<-`(c("spolka","ratio","spread")) %>% mutate(theme="O ile razy* obroty akcjami spółki\nprzekraczają jej średnią z roku") %>% mutate(label=paste0(round(ratio,1),"x")) %>% mutate(color=4),
  m3 %>% select(c(1,2,6)) %>% `colnames<-`(c("spolka","ratio","spread")) %>% mutate(theme="Zmiana kursu akcji") %>% mutate(label=paste0(round(ratio,1),"%")) %>% mutate(color=sign(ratio)+2)
 )
 
@@ -492,11 +499,11 @@ bp3<-ggplot(data=m4,aes(group=theme,fill=color))+
   theme(plot.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+
   theme(panel.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+ 
   theme(panel.spacing = unit(3,"cm"))+
-  theme(plot.title = element_text(color = "#EC0108",size=16,face="bold"))+
-  theme(plot.subtitle = element_text(color = "gray23",size=11,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
+  theme(plot.title = element_text(color = "#EC0108",size=18,face="bold"))+
+  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
   xlab("")+
   ylab("")+
-  labs(title="Spółki budzące wyjątkowe zainteresowanie",
+  labs(title="",
        subtitle="spółki o największych obrotach wobec średniej historycznej",
        caption="źródło: Puls Biznesu; *wielkość obrotów mierzona jako liczba odchyleń standardowych powyżej średniej po korekcie o godzinę sesji")
   
@@ -511,11 +518,6 @@ print(bp3)
 <br></br>
 <br/><br/>
 <br/><br/>
-
-
-
-
-
 
 
 
@@ -554,7 +556,7 @@ mc3<-mc2 %>%
   select(c(1,3,5,6,7,8))
 
 mc4<-bind_rows(
-  mc3 %>% select(c(1,3,5)) %>% `colnames<-`(c("spolka","ratio","spread")) %>% mutate(theme="O ile razy* obroty akcjami spółki\nprzekraczały jej średnią z roku") %>% mutate(label=paste0(round(ratio,1),"x")) %>% mutate(color=4),
+  mc3 %>% select(c(1,3,5)) %>% `colnames<-`(c("spolka","ratio","spread")) %>% mutate(theme="O ile razy* obroty akcjami spółki\nprzekraczają jej średnią z roku") %>% mutate(label=paste0(round(ratio,1),"x")) %>% mutate(color=4),
   mc3 %>% select(c(1,2,6)) %>% `colnames<-`(c("spolka","ratio","spread")) %>% mutate(theme="Zmiana kursu akcji") %>% mutate(label=paste0(round(ratio,1),"%")) %>% mutate(color=sign(ratio)+2)
 )
 
@@ -580,11 +582,11 @@ bp3b<-ggplot(data=mc4,aes(group=theme,fill=color))+
   theme(plot.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+
   theme(panel.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+ 
   theme(panel.spacing = unit(3,"cm"))+
-  theme(plot.title = element_text(color = "#EC0108",size=16,face="bold"))+
-  theme(plot.subtitle = element_text(color = "gray23",size=11,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
+  theme(plot.title = element_text(color = "#EC0108",size=18,face="bold"))+
+  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
   xlab("")+
   ylab("")+
-  labs(title="Spółki budzące wyjątkowe zainteresowanie na New Connect",
+  labs(title="",
        subtitle="spółki o największych obrotach wobec średniej historycznej",
        caption="źródło: Puls Biznesu; *wielkość obrotów mierzona jako liczba odchyleń standardowych powyżej średniej po korekcie o godzinę sesji")
 
@@ -597,8 +599,6 @@ print(bp3b)
 <br></br>
 <br/><br/>
 <br/><br/>
-
-
 
 
 
@@ -713,12 +713,12 @@ bp4<-ggplot(data=n3a,aes(x=date,y=value,group=spolka))+
   theme(plot.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+
   theme(panel.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+ 
   theme(panel.spacing = unit(2,"cm"))+
-  theme(plot.title = element_text(color = "#EC0108",size=16,face="bold"))+
-  theme(plot.subtitle = element_text(color = "gray23",size=11,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
+  theme(plot.title = element_text(color = "#EC0108",size=18,face="bold"))+
+  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
   theme(plot.margin=margin(t=10,r=10,b=10,l=10,unit="pt"))+
   xlab("")+
   ylab("")+
-  labs(title="Spółki najbliżej rocznego maksimum",
+  labs(title="",
        subtitle="kurs za ostatnie 250 dni",
        caption="źródło: Puls Biznesu, Bankier.pl; dane dotyczą spółek o średnich obrotach powyżej 500 tys. zł")
 #png("/Users/ignacymorawski/Documents/SPOTDATA/PB FORECAST/AUTOMATIC/plots/gielda4.png",width=350,height=200,units="mm",bg = "white",res=300)
@@ -843,12 +843,12 @@ bp4<-ggplot(data=nx3a,aes(x=date,y=value,group=spolka))+
   theme(plot.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+
   theme(panel.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+ 
   theme(panel.spacing = unit(2,"cm"))+
-  theme(plot.title = element_text(color = "#EC0108",size=16,face="bold"))+
-  theme(plot.subtitle = element_text(color = "gray23",size=11,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
+  theme(plot.title = element_text(color = "#EC0108",size=18,face="bold"))+
+  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
   theme(plot.margin=margin(t=10,r=10,b=10,l=10,unit="pt"))+
   xlab("")+
   ylab("")+
-  labs(title="Spółki z New Connect najbliżej rocznego maksimum",
+  labs(title="",
        subtitle="kurs za ostatnie 250 dni",
        caption="źródło: Puls Biznesu; dane dotyczą spółek o średnich obrotach powyżej 50 tys. zł")
 #png("/Users/ignacymorawski/Documents/SPOTDATA/PB FORECAST/AUTOMATIC/plots/gielda4b.png",width=350,height=200,units="mm",bg = "white",res=300)
@@ -881,12 +881,12 @@ bp5<-ggplot(data=n3b,aes(x=date,y=value,group=spolka))+
   theme(plot.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+
   theme(panel.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+ 
   theme(panel.spacing = unit(2,"cm"))+
-  theme(plot.title = element_text(color = "#EC0108",size=16,face="bold"))+
-  theme(plot.subtitle = element_text(color = "gray23",size=11,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
+  theme(plot.title = element_text(color = "#EC0108",size=18,face="bold"))+
+  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
   theme(plot.margin=margin(t=10,r=10,b=10,l=10,unit="pt"))+
   xlab("")+
   ylab("")+
-  labs(title="Spółki najbliżej rocznego minimum",
+  labs(title="",
        subtitle="kurs za ostatnie 250 dni",
        caption="źródło: Puls Biznesu, Bankier.pl; dane dotyczą spółek o średnich obrotach powyżej 500 tys. zł")
 
@@ -920,12 +920,12 @@ bp5<-ggplot(data=nx3b,aes(x=date,y=value,group=spolka))+
   theme(plot.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+
   theme(panel.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+ 
   theme(panel.spacing = unit(2,"cm"))+
-  theme(plot.title = element_text(color = "#EC0108",size=16,face="bold"))+
-  theme(plot.subtitle = element_text(color = "gray23",size=11,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
+  theme(plot.title = element_text(color = "#EC0108",size=18,face="bold"))+
+  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
   theme(plot.margin=margin(t=10,r=10,b=10,l=10,unit="pt"))+
   xlab("")+
   ylab("")+
-  labs(title="Spółki z New Connect najbliżej rocznego minimum",
+  labs(title="",
        subtitle="kurs za ostatnie 250 dni",
        caption="źródło: Puls Biznesu; dane dotyczą spółek o średnich obrotach powyżej 50 tys. zł")
 
@@ -939,11 +939,6 @@ print(bp5)
 <br></br>
 <br/><br/>
 <br/><br/>
-
-
-
-
-
 
 
 
