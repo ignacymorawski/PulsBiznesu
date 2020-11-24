@@ -886,7 +886,7 @@ bp5<-ggplot(data=n3b,aes(x=date,y=value,group=spolka))+
   theme(plot.margin=margin(t=10,r=10,b=10,l=10,unit="pt"))+
   xlab("")+
   ylab("")+
-  labs(title="",
+  labs(title=" ",
        subtitle="kurs za ostatnie 250 dni",
        caption="źródło: Puls Biznesu, Bankier.pl; dane dotyczą spółek o średnich obrotach powyżej 500 tys. zł")
 
