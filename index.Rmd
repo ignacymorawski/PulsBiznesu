@@ -138,10 +138,6 @@ save(nc1,nc2,file=here("./data/nc.RData"))
 
 ```{r,echo=FALSE,warning=FALSE,error=FALSE,message=FALSE,fig.width=11,fig.height=8}
 
-
-font_import("/Users/ignacymorawski/Downloads/font/")
-
-
 theurl10<-read_html("http://notowania.pb.pl/stocktable/GPWAKCJE")
 godzina<-theurl10 %>% html_nodes("time") %>% html_text() %>% substr(.,26,30)
 
