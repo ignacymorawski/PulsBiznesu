@@ -3,8 +3,23 @@ title: "&nbsp;"
 output: html_document
 ---
 
+
+
 ```{css,echo=FALSE}
-body {background-color: #FBEEE1;}
+
+/* Whole document: */
+body{
+  font-family: Publico Text;
+  font-size: 14pt;
+  background-color: #FBEEE1;
+}
+/* Headers */
+h1,h2,h3,h4,h5,h6{
+  font-size: 18pt;
+}
+
+#body {background-color: #FBEEE1;}
+
 ```
 
 ```{r setup, include=FALSE}
@@ -25,6 +40,7 @@ library(httr)
 library(scales)
 library(shadowtext)
 library(ggrepel)
+library(extrafont)
 
 
 ### UZUPEŁNIANIE DANYCH NC I WSE ###
@@ -58,7 +74,7 @@ if(length(u3)>1){
 }
 }
 
-save(ws1,ws2,file=here("/data/wse.RData"))
+save(ws1,ws2,file=here("./data/wse.RData"))
 
 
 lnce<-tail(nc1$date,1)
@@ -107,7 +123,7 @@ for (i in seq(length(lnce2))){
 }
 
 
-save(nc1,nc2,file=here("/data/nc.RData"))
+save(nc1,nc2,file=here("./data/nc.RData"))
 
 
 
@@ -121,6 +137,10 @@ save(nc1,nc2,file=here("/data/nc.RData"))
 #### 1. Sytuacja w Warszawie na tle największych rynków
 
 ```{r,echo=FALSE,warning=FALSE,error=FALSE,message=FALSE,fig.width=11,fig.height=8}
+
+
+font_import("/Users/ignacymorawski/Downloads/font/")
+
 
 theurl10<-read_html("http://notowania.pb.pl/stocktable/GPWAKCJE")
 godzina<-theurl10 %>% html_nodes("time") %>% html_text() %>% substr(.,26,30)
@@ -192,6 +212,7 @@ if (q<16){
 
 stock3$time<-as.POSIXct(paste(Sys.Date(),stock3$time,sep=" "))
 
+
 bp5<-ggplot(data=stock3,aes(x=time,y=change,group=name))+
   geom_ribbon(aes(x=time,ymin=0,ymax=change),fill="gray",alpha=0.3)+
   geom_line(aes(color=change),size=0.6)+
@@ -199,17 +220,17 @@ bp5<-ggplot(data=stock3,aes(x=time,y=change,group=name))+
   geom_hline(aes(yintercept = 0),color="red",size=0.5,linetype="dashed")+
   facet_wrap(~name,scales="free_x",ncol=5)+
   theme(strip.background = element_rect(fill="transparent",color="transparent"))+
-  theme(strip.text = element_text(size=11, face="bold",color="gray23"))+
+  theme(strip.text = element_text(size=11, face="bold",color="gray23", family="Publico Text"))+
   theme(axis.ticks=element_blank())+
-  theme(axis.text.y=element_text(margin = margin(t=0,r=20,b=0,l=0,unit="pt")))+
-  theme(axis.text.x=element_text(size=7,angle=45))+
+  theme(axis.text.y=element_text(margin = margin(t=0,r=20,b=0,l=0,unit="pt"), family="Publico Text"))+
+  theme(axis.text.x=element_text(size=7,angle=45, family="Publico Text"))+
   theme(legend.position = "none")+
   theme(plot.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+
   theme(panel.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+ 
   theme(panel.spacing = unit(2,"cm"))+
   #theme(panel.grid=element_blank())+
-  theme(plot.title = element_text(color = "#EC0108",size=19,face="bold"))+
-  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
+  theme(plot.title = element_text(color = "#EC0108",size=19,face="bold", family="Publico Text"))+
+  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt"), family="Publico Text"))+
   theme(plot.margin=margin(t=10,r=10,b=10,l=10,unit="pt"))+
   xlab("")+
   ylab("zmiana w proc.")+
@@ -218,7 +239,7 @@ bp5<-ggplot(data=stock3,aes(x=time,y=change,group=name))+
        subtitle=paste0("Indeksy giełdowe w dniu dzisiejszym na godzinę ",godzina,"\n-zmiana procentowa od zamknięcia dnia poprzedniego (notowania 5min)"),
        caption="źródło: Puls Biznesu, stooq.pl")
 
-ggsave("/Users/ignacymorawski/Documents/SPOTDATA/PB FORECAST/AUTOMATIC/plots/gielda6.png",width=350,height=150,units="mm",bg = "transparent")
+#ggsave("/Users/ignacymorawski/Documents/SPOTDATA/PB FORECAST/AUTOMATIC/plots/gielda6.png",width=350,height=150,units="mm",bg = "transparent")
 
 #png("/Users/ignacymorawski/Documents/SPOTDATA/PB FORECAST/AUTOMATIC/plots/gielda6.png",width=350,height=150,units="mm",bg = "white",res=300)
 print(bp5)
@@ -261,8 +282,8 @@ bp<-ggplot(table, aes(area = obroty, fill = color, label=label)) +
   geom_treemap_text(fontface = "italic", 
                     colour = "white", place = "topleft", 
                     padding.x = grid::unit(0.2, "cm"),padding.y = grid::unit(0.2, "cm"),min.size = 1)+
-    theme(plot.title = element_text(color = "#EC0108",size=18,face="bold"))+
-  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
+    theme(plot.title = element_text(color = "#EC0108",size=18,face="bold", family="Publico Text"))+
+  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt"), family="Publico Text"))+
   theme(legend.position = "none")+
   theme(plot.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+
   labs(title="",
@@ -273,7 +294,7 @@ bp<-ggplot(table, aes(area = obroty, fill = color, label=label)) +
 #        subtitle="wielkość pola jest proporcjonalna do obrotów generowanych na spółce",
 #        caption="źródło: Puls Biznesu")
 
-ggsave("/Users/ignacymorawski/Documents/SPOTDATA/PB FORECAST/AUTOMATIC/plots/gielda1.png",width=350,height=150,units="mm",bg = "transparent")
+#ggsave("/Users/ignacymorawski/Documents/SPOTDATA/PB FORECAST/AUTOMATIC/plots/gielda1.png",width=350,height=150,units="mm",bg = "transparent")
 
 #png("/Users/ignacymorawski/Documents/SPOTDATA/PB FORECAST/AUTOMATIC/plots/gielda1.png",width=350,height=180,units="mm",bg = "white",res=300)
 print(bp)
@@ -289,7 +310,7 @@ print(bp)
 
 
 
-#### 2. Czym najmocniej handluje się na New Connect
+#### 3. Czym najmocniej handluje się na New Connect
 
 ```{r ,echo=FALSE,warning=FALSE,fig.width=11,fig.height=8}
 
@@ -316,8 +337,8 @@ bp2<-ggplot(table2, aes(area = obroty, fill = color, label=label)) +
   geom_treemap_text(fontface = "italic", 
                     colour = "white", place = "topleft", 
                     padding.x = grid::unit(0.2, "cm"),padding.y = grid::unit(0.2, "cm"),min.size = 1)+
-      theme(plot.title = element_text(color = "#EC0108",size=18,face="bold"))+
-  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
+      theme(plot.title = element_text(color = "#EC0108",size=18,face="bold", family="Publico Text"))+
+  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt"), family="Publico Text"))+
   theme(legend.position = "none")+
   theme(plot.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+
   labs(title="",
@@ -484,23 +505,24 @@ m4$color<-factor(m4$color,levels=unique(m4$color))
 
 cols<-c("4"="gray23","1"="darkred","3"="forestgreen","2"="forestgreen")
 
+
 bp3<-ggplot(data=m4,aes(group=theme,fill=color))+
   geom_bar(data=m4,aes(spolka,ratio),stat="Identity")+
   scale_fill_manual(values = cols)+
   coord_flip(clip="off")+
-  geom_text(data=m4,aes(spolka,ratio+sign(ratio)*spread/14,label=label,color=color))+
+  geom_text(data=m4,aes(spolka,ratio+sign(ratio)*spread/14,label=label,color=color, family="Publico Text"))+
   scale_color_manual(values = cols)+
   facet_wrap(~theme,scales="free")+
   theme(strip.background = element_rect(fill="transparent",color="transparent"))+
-  theme(strip.text = element_text(size=11, face="bold",color="gray23"))+
+  theme(strip.text = element_text(size=11, face="bold",color="gray23", family="Publico Text"))+
   theme(axis.ticks=element_blank())+
-  theme(axis.text.y=element_text(margin = margin(t=0,r=20,b=0,l=0,unit="pt")))+
+  theme(axis.text.y=element_text(margin = margin(t=0,r=20,b=0,l=0,unit="pt"),family="Publico Text"))+
   theme(legend.position = "none")+
   theme(plot.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+
   theme(panel.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+ 
   theme(panel.spacing = unit(3,"cm"))+
-  theme(plot.title = element_text(color = "#EC0108",size=18,face="bold"))+
-  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
+  theme(plot.title = element_text(color = "#EC0108",size=18,face="bold", family="Publico Text"))+
+  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt"), family="Publico Text"))+
   xlab("")+
   ylab("")+
   labs(title="",
@@ -571,19 +593,19 @@ bp3b<-ggplot(data=mc4,aes(group=theme,fill=color))+
   geom_bar(data=mc4,aes(spolka,ratio),stat="Identity")+
   scale_fill_manual(values = cols)+
   coord_flip(clip="off")+
-  geom_text(data=mc4,aes(spolka,ratio+sign(ratio)*spread/14,label=label,color=color))+
+  geom_text(data=mc4,aes(spolka,ratio+sign(ratio)*spread/14,label=label,color=color, family="Publico Text"))+
   scale_color_manual(values = cols)+
   facet_wrap(~theme,scales="free")+
   theme(strip.background = element_rect(fill="transparent",color="transparent"))+
-  theme(strip.text = element_text(size=11, face="bold",color="gray23"))+
+  theme(strip.text = element_text(size=11, face="bold",color="gray23", family="Publico Text"))+
   theme(axis.ticks=element_blank())+
-  theme(axis.text.y=element_text(margin = margin(t=0,r=20,b=0,l=0,unit="pt")))+
+  theme(axis.text.y=element_text(margin = margin(t=0,r=20,b=0,l=0,unit="pt"), family="Publico Text"))+
   theme(legend.position = "none")+
   theme(plot.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+
   theme(panel.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+ 
   theme(panel.spacing = unit(3,"cm"))+
-  theme(plot.title = element_text(color = "#EC0108",size=18,face="bold"))+
-  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
+  theme(plot.title = element_text(color = "#EC0108",size=18,face="bold", family="Publico Text"))+
+  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt"), family="Publico Text"))+
   xlab("")+
   ylab("")+
   labs(title="",
@@ -705,16 +727,16 @@ bp4<-ggplot(data=n3a,aes(x=date,y=value,group=spolka))+
   #scale_fill_manual(values = cols)+
   facet_wrap(~spolka,scales="free",ncol=5)+
   theme(strip.background = element_rect(fill="transparent",color="transparent"))+
-  theme(strip.text = element_text(size=11, face="bold",color="gray23"))+
+  theme(strip.text = element_text(size=11, face="bold",color="gray23", family="Publico Text"))+
   theme(axis.ticks=element_blank())+
-  theme(axis.text.y=element_text(margin = margin(t=0,r=20,b=0,l=0,unit="pt")))+
-  theme(axis.text.x=element_text(angle=45,hjust=1))+
+  theme(axis.text.y=element_text(margin = margin(t=0,r=20,b=0,l=0,unit="pt"), family="Publico Text"))+
+  theme(axis.text.x=element_text(angle=45,hjust=1, family="Publico Text"))+
   theme(legend.position = "none")+
   theme(plot.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+
   theme(panel.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+ 
   theme(panel.spacing = unit(2,"cm"))+
-  theme(plot.title = element_text(color = "#EC0108",size=18,face="bold"))+
-  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
+  theme(plot.title = element_text(color = "#EC0108",size=18,face="bold", family="Publico Text"))+
+  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt"), family="Publico Text"))+
   theme(plot.margin=margin(t=10,r=10,b=10,l=10,unit="pt"))+
   xlab("")+
   ylab("")+
@@ -835,16 +857,16 @@ bp4<-ggplot(data=nx3a,aes(x=date,y=value,group=spolka))+
   #scale_fill_manual(values = cols)+
   facet_wrap(~spolka,scales="free",ncol=5)+
   theme(strip.background = element_rect(fill="transparent",color="transparent"))+
-  theme(strip.text = element_text(size=11, face="bold",color="gray23"))+
+  theme(strip.text = element_text(size=11, face="bold",color="gray23", family="Publico Text"))+
   theme(axis.ticks=element_blank())+
-  theme(axis.text.y=element_text(margin = margin(t=0,r=20,b=0,l=0,unit="pt")))+
-  theme(axis.text.x=element_text(angle=45,hjust=1))+
+  theme(axis.text.y=element_text(margin = margin(t=0,r=20,b=0,l=0,unit="pt"), family="Publico Text"))+
+  theme(axis.text.x=element_text(angle=45,hjust=1, family="Publico Text"))+
   theme(legend.position = "none")+
   theme(plot.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+
   theme(panel.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+ 
   theme(panel.spacing = unit(2,"cm"))+
-  theme(plot.title = element_text(color = "#EC0108",size=18,face="bold"))+
-  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
+  theme(plot.title = element_text(color = "#EC0108",size=18,face="bold", family="Publico Text"))+
+  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt"), family="Publico Text"))+
   theme(plot.margin=margin(t=10,r=10,b=10,l=10,unit="pt"))+
   xlab("")+
   ylab("")+
@@ -873,16 +895,16 @@ bp5<-ggplot(data=n3b,aes(x=date,y=value,group=spolka))+
   #scale_fill_manual(values = cols)+
   facet_wrap(~spolka,scales="free",ncol=5)+
   theme(strip.background = element_rect(fill="transparent",color="transparent"))+
-  theme(strip.text = element_text(size=11, face="bold",color="gray23"))+
+  theme(strip.text = element_text(size=11, face="bold",color="gray23", family="Publico Text"))+
   theme(axis.ticks=element_blank())+
-  theme(axis.text.y=element_text(margin = margin(t=0,r=20,b=0,l=0,unit="pt")))+
-  theme(axis.text.x=element_text(angle=45,hjust=1))+
+  theme(axis.text.y=element_text(margin = margin(t=0,r=20,b=0,l=0,unit="pt"), family="Publico Text"))+
+  theme(axis.text.x=element_text(angle=45,hjust=1, family="Publico Text"))+
   theme(legend.position = "none")+
   theme(plot.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+
   theme(panel.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+ 
   theme(panel.spacing = unit(2,"cm"))+
-  theme(plot.title = element_text(color = "#EC0108",size=18,face="bold"))+
-  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
+  theme(plot.title = element_text(color = "#EC0108",size=18,face="bold", family="Publico Text"))+
+  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt"), family="Publico Text"))+
   theme(plot.margin=margin(t=10,r=10,b=10,l=10,unit="pt"))+
   xlab("")+
   ylab("")+
@@ -912,16 +934,16 @@ bp5<-ggplot(data=nx3b,aes(x=date,y=value,group=spolka))+
   #scale_fill_manual(values = cols)+
   facet_wrap(~spolka,scales="free",ncol=5)+
   theme(strip.background = element_rect(fill="transparent",color="transparent"))+
-  theme(strip.text = element_text(size=11, face="bold",color="gray23"))+
+  theme(strip.text = element_text(size=11, face="bold",color="gray23", family="Publico Text"))+
   theme(axis.ticks=element_blank())+
-  theme(axis.text.y=element_text(margin = margin(t=0,r=20,b=0,l=0,unit="pt")))+
-  theme(axis.text.x=element_text(angle=45,hjust=1))+
+  theme(axis.text.y=element_text(margin = margin(t=0,r=20,b=0,l=0,unit="pt"), family="Publico Text"))+
+  theme(axis.text.x=element_text(angle=45,hjust=1, family="Publico Text"))+
   theme(legend.position = "none")+
   theme(plot.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+
   theme(panel.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+ 
   theme(panel.spacing = unit(2,"cm"))+
-  theme(plot.title = element_text(color = "#EC0108",size=18,face="bold"))+
-  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt")))+
+  theme(plot.title = element_text(color = "#EC0108",size=18,face="bold", family="Publico Text"))+
+  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt"), family="Publico Text"))+
   theme(plot.margin=margin(t=10,r=10,b=10,l=10,unit="pt"))+
   xlab("")+
   ylab("")+
