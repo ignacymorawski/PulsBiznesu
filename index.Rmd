@@ -41,6 +41,7 @@ library(scales)
 library(shadowtext)
 library(ggrepel)
 library(extrafont)
+library(mail)
 
 
 ### UZUPEŁNIANIE DANYCH NC I WSE ###
@@ -124,8 +125,6 @@ for (i in seq(length(lnce2))){
 
 
 save(nc1,nc2,file=here("./data/nc.RData"))
-
-
 
 ### Ładowanie bieżących danych GPW i New Connect
 
