@@ -179,7 +179,8 @@ stock2<- time %>%
   filter(`<TICKER>` %in% ind) %>% 
   left_join(indx,by=c("<TICKER>")) %>% 
   left_join(stock.ref2,by=c("<TICKER>")) %>% 
-  mutate(change=100*`<CLOSE>`/close-100)
+  mutate(change=100*`<CLOSE>`/close-100) %>% 
+  drop_na
 
 timex<-paste0(substr(time$time,1,2),":",substr(time$time,3,4))
 time2<-which((timex %in% unique(stock2$time))==FALSE & as.numeric(substr(timex,1,2))>=9)
