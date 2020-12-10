@@ -133,8 +133,6 @@ save(nc1,nc2,file=here("./data/nc.RData"))
 
 <br></br>
 
-#### 1. Sytuacja w Warszawie na tle największych rynków
-
 ```{r,echo=FALSE,warning=FALSE,error=FALSE,message=FALSE,fig.width=11,fig.height=8}
 
 theurl10<-read_html("http://notowania.pb.pl/stocktable/GPWAKCJE")
@@ -143,103 +141,103 @@ godzina<-theurl10 %>% html_nodes("time") %>% html_text() %>% substr(.,26,30)
 now1<-read_html("http://notowania.pb.pl/stocktable/GPWAKCJE")
 now2<-now1 %>% html_nodes("time") %>% html_text() %>% substr(.,15,24)
 today<-as.Date(now2)
-
-download.file(url=paste0("https://stooq.pl/db/d/?d=",gsub("-","",today),"&t=5"),destfile = "/Users/ignacymorawski/Documents/SPOTDATA/PB FORECAST/AUTOMATIC/plots/stock.txt", method="libcurl")
-
-checkwig<-NA
-ca<-1
-while(is.na(checkwig)){
-download.file(url=paste0("https://stooq.pl/db/d/?d=",gsub("-","",today-ca),"&t=5"),destfile = "/Users/ignacymorawski/Documents/SPOTDATA/PB FORECAST/AUTOMATIC/plots/stockref.txt", method="libcurl")
-stock.ref<-read_delim("/Users/ignacymorawski/Documents/SPOTDATA/PB FORECAST/AUTOMATIC/plots/stockref.txt",delim=",",col_names = TRUE)
-checkwig<-which(stock.ref$`<TICKER>`=="WIG")[1]
-ca<-ca+1
-}
-
-
-ind<-c("WIG","WIG20","SWIG80","MWIG40","NCINDEX","^SPX","^CAC","^DAX","^FTM")
-name<-c("WIG","WIG20","SWIG80","MWIG40","NCINDEX","S&P500","CAC40","DAX","FTSE250")
-indx<-tibble(
-  `<TICKER>`=ind,
-  name=name
-)
-
-stock.ref2<-stock.ref %>% 
-  select(c(1,4,8)) %>% 
-  filter(`<TICKER>` %in% ind) %>% 
-  group_by(`<TICKER>`) %>% 
-  summarise(close=tail(`<CLOSE>`,1))
-
-time<-tibble(time=unique(stock.ref$`<TIME>`)) %>% arrange(time)
-
-stock<-read_delim("/Users/ignacymorawski/Documents/SPOTDATA/PB FORECAST/AUTOMATIC/plots/stock.txt",delim=",",col_names = TRUE)
-stock2<- time %>% 
-  left_join(stock,by=c("time"="<TIME>")) %>% 
-  mutate_at(c("time"),~paste0(substr(.,1,2),":",substr(.,3,4))) %>% 
-  select(c(1,2,8)) %>% 
-  filter(`<TICKER>` %in% ind) %>% 
-  left_join(indx,by=c("<TICKER>")) %>% 
-  left_join(stock.ref2,by=c("<TICKER>")) %>% 
-  mutate(change=100*`<CLOSE>`/close-100) %>% 
-  drop_na
-
-timex<-paste0(substr(time$time,1,2),":",substr(time$time,3,4))
-time2<-which((timex %in% unique(stock2$time))==FALSE & as.numeric(substr(timex,1,2))>=9)
-timex2<-timex[time2]
-
-n1<-unique(stock2$`<TICKER>`)
-n2<-length(n1)
-
-timex3<-tibble(
-  time=rep(timex2,n2),
-  `<TICKER>`=rep(n1,each=length(timex2)),
-  `<CLOSE>`=NA,
-  name=rep(indx %>% filter(`<TICKER>` %in% n1) %>% select(name) %>% unlist,each=length(timex2)),
-  close=rep(stock.ref2 %>%  filter(`<TICKER>` %in% n1) %>% select(close) %>% unlist,each=length(timex2)),
-  change=NA,
-)
-
-stock3<-bind_rows(stock2,timex3)
-stock3$name<-factor(stock3$name,levels=name)
-
-q<-as.numeric(substr(tail(stock2$time,1),1,2))
-if (q<16){
-  stock3<-stock3 %>% filter(`<TICKER>`!="^SPX")
-}
-
-stock3$time<-as.POSIXct(paste(Sys.Date(),stock3$time,sep=" "))
-
-
-bp5<-ggplot(data=stock3,aes(x=time,y=change,group=name))+
-  geom_ribbon(aes(x=time,ymin=0,ymax=change),fill="gray",alpha=0.3)+
-  geom_line(aes(color=change),size=0.6)+
-  scale_color_gradient2(min="red",mid="gray23",high="darkolivegreen4",midpoint=0)+
-  geom_hline(aes(yintercept = 0),color="red",size=0.5,linetype="dashed")+
-  facet_wrap(~name,scales="free_x",ncol=5)+
-  theme(strip.background = element_rect(fill="transparent",color="transparent"))+
-  theme(strip.text = element_text(size=11, face="bold",color="gray23", family="Publico Text"))+
-  theme(axis.ticks=element_blank())+
-  theme(axis.text.y=element_text(margin = margin(t=0,r=20,b=0,l=0,unit="pt"), family="Publico Text"))+
-  theme(axis.text.x=element_text(size=7,angle=45, family="Publico Text"))+
-  theme(legend.position = "none")+
-  theme(plot.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+
-  theme(panel.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+ 
-  theme(panel.spacing = unit(2,"cm"))+
-  #theme(panel.grid=element_blank())+
-  theme(plot.title = element_text(color = "#EC0108",size=19,face="bold", family="Publico Text"))+
-  theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt"), family="Publico Text"))+
-  theme(plot.margin=margin(t=10,r=10,b=10,l=10,unit="pt"))+
-  xlab("")+
-  ylab("zmiana w proc.")+
-  scale_x_datetime(labels = date_format("%H:%M", tz="Europe/Berlin"), date_breaks = "3 hours")+
-  labs(title="",
-       subtitle=paste0("Indeksy giełdowe w dniu dzisiejszym na godzinę ",godzina,"\n-zmiana procentowa od zamknięcia dnia poprzedniego (notowania 5min)"),
-       caption="źródło: Puls Biznesu, stooq.pl")
-
-#ggsave("/Users/ignacymorawski/Documents/SPOTDATA/PB FORECAST/AUTOMATIC/plots/gielda6.png",width=350,height=150,units="mm",bg = "transparent")
-
-#png("/Users/ignacymorawski/Documents/SPOTDATA/PB FORECAST/AUTOMATIC/plots/gielda6.png",width=350,height=150,units="mm",bg = "white",res=300)
-print(bp5)
-#dev.off()
+# 
+# download.file(url=paste0("https://stooq.pl/db/d/?d=",gsub("-","",today),"&t=5"),destfile = "/Users/ignacymorawski/Documents/SPOTDATA/PB FORECAST/AUTOMATIC/plots/stock.txt", method="libcurl")
+# 
+# checkwig<-NA
+# ca<-1
+# while(is.na(checkwig)){
+# download.file(url=paste0("https://stooq.pl/db/d/?d=",gsub("-","",today-ca),"&t=5"),destfile = "/Users/ignacymorawski/Documents/SPOTDATA/PB FORECAST/AUTOMATIC/plots/stockref.txt", method="libcurl")
+# stock.ref<-read_delim("/Users/ignacymorawski/Documents/SPOTDATA/PB FORECAST/AUTOMATIC/plots/stockref.txt",delim=",",col_names = TRUE)
+# checkwig<-which(stock.ref$`<TICKER>`=="WIG")[1]
+# ca<-ca+1
+# }
+# 
+# 
+# ind<-c("WIG","WIG20","SWIG80","MWIG40","NCINDEX","^SPX","^CAC","^DAX","^FTM")
+# name<-c("WIG","WIG20","SWIG80","MWIG40","NCINDEX","S&P500","CAC40","DAX","FTSE250")
+# indx<-tibble(
+#   `<TICKER>`=ind,
+#   name=name
+# )
+# 
+# stock.ref2<-stock.ref %>% 
+#   select(c(1,4,8)) %>% 
+#   filter(`<TICKER>` %in% ind) %>% 
+#   group_by(`<TICKER>`) %>% 
+#   summarise(close=tail(`<CLOSE>`,1))
+# 
+# time<-tibble(time=unique(stock.ref$`<TIME>`)) %>% arrange(time)
+# 
+# stock<-read_delim("/Users/ignacymorawski/Documents/SPOTDATA/PB FORECAST/AUTOMATIC/plots/stock.txt",delim=",",col_names = TRUE)
+# stock2<- time %>% 
+#   left_join(stock,by=c("time"="<TIME>")) %>% 
+#   mutate_at(c("time"),~paste0(substr(.,1,2),":",substr(.,3,4))) %>% 
+#   select(c(1,2,8)) %>% 
+#   filter(`<TICKER>` %in% ind) %>% 
+#   left_join(indx,by=c("<TICKER>")) %>% 
+#   left_join(stock.ref2,by=c("<TICKER>")) %>% 
+#   mutate(change=100*`<CLOSE>`/close-100) %>% 
+#   drop_na
+# 
+# timex<-paste0(substr(time$time,1,2),":",substr(time$time,3,4))
+# time2<-which((timex %in% unique(stock2$time))==FALSE & as.numeric(substr(timex,1,2))>=9)
+# timex2<-timex[time2]
+# 
+# n1<-unique(stock2$`<TICKER>`)
+# n2<-length(n1)
+# 
+# timex3<-tibble(
+#   time=rep(timex2,n2),
+#   `<TICKER>`=rep(n1,each=length(timex2)),
+#   `<CLOSE>`=NA,
+#   name=rep(indx %>% filter(`<TICKER>` %in% n1) %>% select(name) %>% unlist,each=length(timex2)),
+#   close=rep(stock.ref2 %>%  filter(`<TICKER>` %in% n1) %>% select(close) %>% unlist,each=length(timex2)),
+#   change=NA,
+# )
+# 
+# stock3<-bind_rows(stock2,timex3)
+# stock3$name<-factor(stock3$name,levels=name)
+# 
+# q<-as.numeric(substr(tail(stock2$time,1),1,2))
+# if (q<16){
+#   stock3<-stock3 %>% filter(`<TICKER>`!="^SPX")
+# }
+# 
+# stock3$time<-as.POSIXct(paste(Sys.Date(),stock3$time,sep=" "))
+# 
+# 
+# bp5<-ggplot(data=stock3,aes(x=time,y=change,group=name))+
+#   geom_ribbon(aes(x=time,ymin=0,ymax=change),fill="gray",alpha=0.3)+
+#   geom_line(aes(color=change),size=0.6)+
+#   scale_color_gradient2(min="red",mid="gray23",high="darkolivegreen4",midpoint=0)+
+#   geom_hline(aes(yintercept = 0),color="red",size=0.5,linetype="dashed")+
+#   facet_wrap(~name,scales="free_x",ncol=5)+
+#   theme(strip.background = element_rect(fill="transparent",color="transparent"))+
+#   theme(strip.text = element_text(size=11, face="bold",color="gray23", family="Publico Text"))+
+#   theme(axis.ticks=element_blank())+
+#   theme(axis.text.y=element_text(margin = margin(t=0,r=20,b=0,l=0,unit="pt"), family="Publico Text"))+
+#   theme(axis.text.x=element_text(size=7,angle=45, family="Publico Text"))+
+#   theme(legend.position = "none")+
+#   theme(plot.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+
+#   theme(panel.background = element_rect(fill="#FBEEE1",color="#FBEEE1"))+ 
+#   theme(panel.spacing = unit(2,"cm"))+
+#   #theme(panel.grid=element_blank())+
+#   theme(plot.title = element_text(color = "#EC0108",size=19,face="bold", family="Publico Text"))+
+#   theme(plot.subtitle = element_text(color = "gray23",size=14,margin=margin(t=0,r=0,b=25,l=0,unit="pt"), family="Publico Text"))+
+#   theme(plot.margin=margin(t=10,r=10,b=10,l=10,unit="pt"))+
+#   xlab("")+
+#   ylab("zmiana w proc.")+
+#   scale_x_datetime(labels = date_format("%H:%M", tz="Europe/Berlin"), date_breaks = "3 hours")+
+#   labs(title="",
+#        subtitle=paste0("Indeksy giełdowe w dniu dzisiejszym na godzinę ",godzina,"\n-zmiana procentowa od zamknięcia dnia poprzedniego (notowania 5min)"),
+#        caption="źródło: Puls Biznesu, stooq.pl")
+# 
+# #ggsave("/Users/ignacymorawski/Documents/SPOTDATA/PB FORECAST/AUTOMATIC/plots/gielda6.png",width=350,height=150,units="mm",bg = "transparent")
+# 
+# #png("/Users/ignacymorawski/Documents/SPOTDATA/PB FORECAST/AUTOMATIC/plots/gielda6.png",width=350,height=150,units="mm",bg = "white",res=300)
+# print(bp5)
+# #dev.off()
 
 
 
@@ -247,11 +245,9 @@ print(bp5)
 ```
 <br></br>
 <br/><br/>
-<br/><br/>
 
 
-
-#### 2. Czym najmocniej handluje się na rynku głównym GPW
+#### 1. Czym najmocniej handluje się na rynku głównym GPW
 
 ```{r ,echo=FALSE,warning=FALSE,fig.width=11,fig.height=8}
 
@@ -306,7 +302,7 @@ print(bp)
 
 
 
-#### 3. Czym najmocniej handluje się na New Connect
+#### 2. Czym najmocniej handluje się na New Connect
 
 ```{r ,echo=FALSE,warning=FALSE,fig.width=11,fig.height=8}
 
@@ -405,7 +401,7 @@ turn0<-bind_rows(turn.plus,turn.minus) %>% select(c(1,2,3,6,7,8)) %>%
 <br/><br/>
 
 
-#### 4. Które spółki przyciągają wyjątkową uwagę na rynku głównym GPW
+#### 3. Które spółki przyciągają wyjątkową uwagę na rynku głównym GPW
 ```{r, echo=FALSE, warning=FALSE,error=FALSE,message=FALSE,fig.width=11,fig.height=8}
 
 
@@ -539,7 +535,7 @@ print(bp3)
 
 
 
-#### 5. Które spółki przyciągają wyjątkową uwagę na New Connect
+#### 4. Które spółki przyciągają wyjątkową uwagę na New Connect
 ```{r, echo=FALSE, warning=FALSE,error=FALSE,message=FALSE,fig.width=11,fig.height=8}
 
 
@@ -621,7 +617,7 @@ print(bp3b)
 
 
 
-#### 6. Które spółki z rynku głównego są najbliżej rocznego maksimum
+#### 5. Które spółki z rynku głównego są najbliżej rocznego maksimum
 ```{r, echo=FALSE, warning=FALSE,error=FALSE,message=FALSE,fig.width=11,fig.height=8}
 
 
@@ -753,7 +749,7 @@ print(bp4)
 
 
 
-#### 7. Które spółki z New Connect są najbliżej rocznego maksimum
+#### 6. Które spółki z New Connect są najbliżej rocznego maksimum
 ```{r, echo=FALSE, warning=FALSE,error=FALSE,message=FALSE,fig.width=11,fig.height=8}
 
 
@@ -883,7 +879,7 @@ print(bp4)
 
 
 
-#### 8. Które spółki z rynku głównego są najbliżej rocznego minimum
+#### 7. Które spółki z rynku głównego są najbliżej rocznego minimum
 ```{r, echo=FALSE, warning=FALSE,error=FALSE,message=FALSE,fig.width=11,fig.height=8}
 
 bp5<-ggplot(data=n3b,aes(x=date,y=value,group=spolka))+
@@ -922,7 +918,7 @@ print(bp5)
 
 
 
-#### 9. Które spółki z New Connect są najbliżej rocznego minimum
+#### 8. Które spółki z New Connect są najbliżej rocznego minimum
 ```{r, echo=FALSE, warning=FALSE,error=FALSE,message=FALSE,fig.width=11,fig.height=8}
 
 bp5<-ggplot(data=nx3b,aes(x=date,y=value,group=spolka))+
