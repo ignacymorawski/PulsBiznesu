@@ -48,7 +48,7 @@ library(mail)
 
 load(here("./data/wse.RData"))
 load(here("./data/nc.RData"))
-source(here("/Users/ignacymorawski/Documents/SPOTDATA/UpdateGitHub.R"))
+source(here("./UpdateGitHub.R"))
 
 
 lwse<-tail(ws1$date,1)
