@@ -47,12 +47,10 @@ library(stringi)
 
 load(here("./data/wse.RData"))
 load(here("./data/nc.RData"))
-<<<<<<< HEAD
-source("/home/rstudio/UpdateGitHub.R")
-=======
-source("/Users/ignacymorawski/Documents/SPOTDATA/UpdateGitHub.R")
 
->>>>>>> master
+source("/home/rstudio/UpdateGitHub.R")
+
+source("/Users/ignacymorawski/Documents/SPOTDATA/UpdateGitHub.R")
 
 lwse<-tail(ws1$date,1)
 lwse2<-format(seq(as.Date(lwse)+1,Sys.Date(),by="day"))
@@ -251,11 +249,8 @@ today<-as.Date(now2)
 <br/><br/>
 
 
-<<<<<<< HEAD
-#### 1. Czym najmocniej handluje się na rynku głównym GPW niedzielny test3
-=======
-#### 1. Czym najmocniej handluje się na rynku głównym GPW sunday test4
->>>>>>> master
+#### 1. Czym najmocniej handluje się na rynku głównym GPW sunday test5
+
 
 ```{r ,echo=FALSE,warning=FALSE,fig.width=11,fig.height=8}
 
