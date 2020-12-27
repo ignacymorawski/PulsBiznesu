@@ -48,7 +48,7 @@ library(mail)
 
 load(here("./data/wse.RData"))
 load(here("./data/nc.RData"))
-source(here("./UpdateGitHub.R"))
+source("/Users/ignacymorawski/Documents/SPOTDATA/UpdateGitHub.R")
 
 
 lwse<-tail(ws1$date,1)
@@ -248,7 +248,7 @@ today<-as.Date(now2)
 <br/><br/>
 
 
-#### 1. Czym najmocniej handluje się na rynku głównym GPW sunday test
+#### 1. Czym najmocniej handluje się na rynku głównym GPW sunday test3
 
 ```{r ,echo=FALSE,warning=FALSE,fig.width=11,fig.height=8}
 
