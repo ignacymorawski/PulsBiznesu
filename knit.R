@@ -1,2 +1,2 @@
-rmarkdown::render("/home/rstudio/PulsBiznesu/PulsBiznesu/index.Rmd", "html_document")
+rmarkdown::render(input="/home/rstudio/PulsBiznesu/PulsBiznesu/index.Rmd", output_file="/home/rstudio/PulsBiznesu/PulsBiznesu/docs/index.html")
 UpdateGitHub()
