@@ -9,7 +9,7 @@ output: html_document
 
 /* Whole document: */
 body{
-  font-family: Publico Text;
+  #  font-family: Publico Text;
   font-size: 14pt;
   background-color: #FBEEE1;
 }
@@ -38,16 +38,15 @@ library(here)
 library(httr)
 library(scales)
 library(ggrepel)
-library(extrafont)
-library(mail)
+#library(extrafont)
+#library(mail)
 library(stringi)
 
 
 ### UZUPEŁNIANIE DANYCH NC I WSE ###
 
-load(here("./data/wse.RData"))
-load(here("./data/nc.RData"))
-
+load("/home/rstudio/PulsBiznesu/PulsBiznesu/data/wse.RData")
+load("/home/rstudio/PulsBiznesu/PulsBiznesu/data/nc.RData")
 source("/home/rstudio/UpdateGitHub.R")
 
 lwse<-tail(ws1$date,1)
@@ -75,7 +74,7 @@ if(length(u3)>1){
 }
 }
 
-save(ws1,ws2,file=here("./data/wse.RData"))
+save(ws1,ws2,file="/home/rstudio/PulsBiznesu/PulsBiznesu/data/wse.RData")
 
 
 lnce<-tail(nc1$date,1)
@@ -96,9 +95,9 @@ for (i in seq(length(lnce2))){
   if (exists$exists==TRUE){
   
   download.file(paste0("https://newconnect.pl/pub/NEWCONNECT/statystyki/statystyki_dzienne/NC_",lnce3[i],".xls"),
-                destfile=here(paste0("./data/ncq/NC_",lnce3[i],".xls")))
+                destfile=here(paste0("/home/rstudio/PulsBiznesu/PulsBiznesudata/ncq/NC_",lnce3[i],".xls")))
   
-  u0<-read_excel(here(paste0("./data/ncq/NC_",lnce3[i],".xls")),3,skip=5,col_names = TRUE)
+  u0<-read_excel(here(paste0("/home/rstudio/PulsBiznesu/PulsBiznesudata/ncq/NC_",lnce3[i],".xls")),3,skip=5,col_names = TRUE)
 
   u2<-u0 %>% 
     select(Security,Closing,Trading...24) %>% 
@@ -124,7 +123,7 @@ for (i in seq(length(lnce2))){
 }
 
 
-save(nc1,nc2,file=here("./data/nc.RData"))
+save(nc1,nc2,file=here("/home/rstudio/PulsBiznesu/PulsBiznesu/data/nc.RData"))
 
 ### Ładowanie bieżących danych GPW i New Connect
 
@@ -403,7 +402,7 @@ turn0<-bind_rows(turn.plus,turn.minus) %>% select(c(1,2,3,6,7,8)) %>%
 ```{r, echo=FALSE, warning=FALSE,error=FALSE,message=FALSE,fig.width=11,fig.height=8}
 
 
-load(here("./data/wse.RData"))
+load(here("/home/rstudio/PulsBiznesu/PulsBiznesu/data/wse.RData"))
 
 m1<-tibble(
   spolka=colnames(ws2)[-c(1)],
@@ -537,7 +536,7 @@ print(bp3)
 ```{r, echo=FALSE, warning=FALSE,error=FALSE,message=FALSE,fig.width=11,fig.height=8}
 
 
-load(here("./data/nc.RData"))
+load(here("/home/rstudio/PulsBiznesu/PulsBiznesu/data/nc.RData"))
 
 mc1<-tibble(
   spolka=colnames(nc2)[-c(1)],
