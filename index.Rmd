@@ -248,7 +248,7 @@ today<-as.Date(now2)
 <br/><br/>
 
 
-#### 1. Czym najmocniej handluje się na rynku głównym GPW sunday test4
+#### 1. Czym najmocniej handluje się na rynku głównym GPW 
 
 ```{r ,echo=FALSE,warning=FALSE,fig.width=11,fig.height=8}
 
