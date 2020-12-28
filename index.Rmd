@@ -500,7 +500,7 @@ bp3<-ggplot(data=m4,aes(group=theme,fill=color))+
   geom_bar(data=m4,aes(spolka,ratio),stat="Identity")+
   scale_fill_manual(values = cols)+
   coord_flip(clip="off")+
-  geom_text(data=m4,aes(spolka,ratio+sign(ratio)*spread/14,label=label,color=color, family="Publico Text"))+
+  geom_text(data=m4,aes(spolka,ratio+sign(ratio)*spread/10,label=label,color=color, family="Publico Text"))+
   scale_color_manual(values = cols)+
   facet_wrap(~theme,scales="free")+
   theme(strip.background = element_rect(fill="transparent",color="transparent"))+
@@ -583,7 +583,7 @@ bp3b<-ggplot(data=mc4,aes(group=theme,fill=color))+
   geom_bar(data=mc4,aes(spolka,ratio),stat="Identity")+
   scale_fill_manual(values = cols)+
   coord_flip(clip="off")+
-  geom_text(data=mc4,aes(spolka,ratio+sign(ratio)*spread/14,label=label,color=color, family="Publico Text"))+
+  geom_text(data=mc4,aes(spolka,ratio+sign(ratio)*spread/10,label=label,color=color, family="Publico Text"))+
   scale_color_manual(values = cols)+
   facet_wrap(~theme,scales="free")+
   theme(strip.background = element_rect(fill="transparent",color="transparent"))+
