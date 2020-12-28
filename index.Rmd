@@ -24,6 +24,7 @@ h1,h2,h3,h4,h5,h6{
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
 ```
 
 ```{r,echo=FALSE, warning=FALSE,error=FALSE,results='hide',message=FALSE}
@@ -48,6 +49,7 @@ library(stringi)
 load("/home/rstudio/PulsBiznesu/PulsBiznesu/data/wse.RData")
 load("/home/rstudio/PulsBiznesu/PulsBiznesu/data/nc.RData")
 source("/home/rstudio/UpdateGitHub.R")
+
 
 lwse<-tail(ws1$date,1)
 lwse2<-format(seq(as.Date(lwse)+1,Sys.Date(),by="day"))
