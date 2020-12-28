@@ -27,29 +27,28 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r,echo=FALSE, warning=FALSE,error=FALSE,results='hide',message=FALSE}
-library(XLConnect)
+
 library(tidyverse)
 library(readxl)
 library(rvest)
 library(stringr)
 library(zoo)
 library(treemapify)
-library(plotly)
 library(here)
 library(httr)
 library(scales)
-library(shadowtext)
 library(ggrepel)
 library(extrafont)
 library(mail)
+library(stringi)
 
 
 ### UZUPEŁNIANIE DANYCH NC I WSE ###
 
 load(here("./data/wse.RData"))
 load(here("./data/nc.RData"))
-source("/Users/ignacymorawski/Documents/SPOTDATA/UpdateGitHub.R")
 
+source("/home/rstudio/UpdateGitHub.R")
 
 lwse<-tail(ws1$date,1)
 lwse2<-format(seq(as.Date(lwse)+1,Sys.Date(),by="day"))
@@ -248,7 +247,12 @@ today<-as.Date(now2)
 <br/><br/>
 
 
+<<<<<<< HEAD
 #### 1. Czym najmocniej handluje się na rynku głównym GPW 
+=======
+#### 1. Czym najmocniej handluje się na rynku głównym GPW sunday test7
+
+>>>>>>> master
 
 ```{r ,echo=FALSE,warning=FALSE,fig.width=11,fig.height=8}
 
@@ -260,7 +264,7 @@ table<-tibble(spolka=tables0$`Nazwa AD`,
               obroty=gsub(",",".",tables0$`Obrót AD`)
 ) %>% 
   mutate_at(c("zmiana"),~as.numeric(substr(.,1,nchar(.)-1))) %>% 
-  mutate_at(c("obroty"),~as.numeric(gsub("\\s","",.)))
+  mutate_at(c("obroty"),~as.numeric(stri_replace_all_charclass(.,"\\p{WHITE_SPACE}","")))
 
 table$color<-unlist(lapply(table$zmiana,function(x) sign(x)*min(abs(x),3)))
 table$label<-paste0(table$spolka,"\n",round(table$zmiana,1),"%")
@@ -318,7 +322,7 @@ table2<-tibble(spolka=tables20$`Nazwa AD`,
               obroty=gsub(",",".",tables20$`Obrót AD`)
 ) %>% 
   mutate_at(c("zmiana"),~as.numeric(substr(.,1,nchar(.)-1))) %>% 
-  mutate_at(c("obroty"),~as.numeric(gsub("\\s","",.)))
+  mutate_at(c("obroty"),~as.numeric(stri_replace_all_charclass(.,"\\p{WHITE_SPACE}","")))
 
 table2$color<-unlist(lapply(table2$zmiana,function(x) sign(x)*min(abs(x),3)))
 table2$label<-paste0(table2$spolka,"\n",round(table2$zmiana,1),"%")
