@@ -48,7 +48,7 @@ library(stringi)
 load(here("./data/wse.RData"))
 load(here("./data/nc.RData"))
 
-source("/home/rstudio/UpdateGitHub.R")
+source("/Users/ignacymorawski/Documents/SPOTDATA/UpdateGitHub.R")
 
 lwse<-tail(ws1$date,1)
 lwse2<-format(seq(as.Date(lwse)+1,Sys.Date(),by="day"))
@@ -246,13 +246,8 @@ today<-as.Date(now2)
 <br></br>
 <br/><br/>
 
-
-<<<<<<< HEAD
 #### 1. Czym najmocniej handluje się na rynku głównym GPW 
-=======
-#### 1. Czym najmocniej handluje się na rynku głównym GPW sunday test7
 
->>>>>>> master
 
 ```{r ,echo=FALSE,warning=FALSE,fig.width=11,fig.height=8}
 
@@ -302,8 +297,6 @@ print(bp)
 <br></br>
 <br/><br/>
 <br/><br/>
-
-
 
 
 
