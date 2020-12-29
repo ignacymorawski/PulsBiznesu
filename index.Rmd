@@ -97,9 +97,9 @@ for (i in seq(length(lnce2))){
   if (exists$exists==TRUE){
   
   download.file(paste0("https://newconnect.pl/pub/NEWCONNECT/statystyki/statystyki_dzienne/NC_",lnce3[i],".xls"),
-                destfile=here(paste0("/home/rstudio/PulsBiznesu/PulsBiznesudata/ncq/NC_",lnce3[i],".xls")))
+                destfile=here(paste0("/home/rstudio/PulsBiznesu/PulsBiznesu/data/ncq/NC_",lnce3[i],".xls")))
   
-  u0<-read_excel(here(paste0("/home/rstudio/PulsBiznesu/PulsBiznesudata/ncq/NC_",lnce3[i],".xls")),3,skip=5,col_names = TRUE)
+  u0<-read_excel(here(paste0("/home/rstudio/PulsBiznesu/PulsBiznesu/data/ncq/NC_",lnce3[i],".xls")),3,skip=5,col_names = TRUE)
 
   u2<-u0 %>% 
     select(Security,Closing,Trading...24) %>% 
