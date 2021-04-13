@@ -255,9 +255,13 @@ today<-as.Date(now2)
 
 theurl10<-read_html("http://notowania.pb.pl/stocktable/GPWAKCJE")
 tables0<-as_tibble(html_table(theurl10)[[1]])
-table<-tibble(spolka=tables0$`Nazwa AD`,
-              zmiana=gsub(",",".",tables0$`Zmiana % AD`),
-              obroty=gsub(",",".",tables0$`Obrót AD`)
+daty<-gsub(" .*$","",tables0$`Czas AD`)
+maxfreq<-max(table(gsub(" .*$","",tables0$`Czas AD`)))
+tables0b<-tables0 %>% slice(which(daty==names(which(table(gsub(" .*$","",tables0$`Czas AD`))==maxfreq))))
+
+table<-tibble(spolka=tables0b$`Nazwa AD`,
+              zmiana=gsub(",",".",tables0b$`Zmiana % AD`),
+              obroty=gsub(",",".",tables0b$`Obrót AD`)
 ) %>% 
   mutate_at(c("zmiana"),~as.numeric(substr(.,1,nchar(.)-1))) %>% 
   mutate_at(c("obroty"),~as.numeric(stri_replace_all_charclass(.,"\\p{WHITE_SPACE}","")))
@@ -311,9 +315,15 @@ dzien<-theurl10 %>% html_nodes("time") %>% html_text() %>% substr(.,15,24) %>% a
 
 theurl20<-read_html("http://notowania.pb.pl/stocktable/UTPXNCO")
 tables20<-as_tibble(html_table(theurl20)[[1]])
-table2<-tibble(spolka=tables20$`Nazwa AD`,
-              zmiana=gsub(",",".",tables20$`Zmiana % AD`),
-              obroty=gsub(",",".",tables20$`Obrót AD`)
+
+daty2<-gsub(" .*$","",tables20$`Czas AD`)
+maxfreq2<-max(table(gsub(" .*$","",tables20$`Czas AD`)))
+tables20b<-tables20 %>% slice(which(daty2==names(which(table(gsub(" .*$","",tables20$`Czas AD`))==maxfreq2))))
+
+
+table2<-tibble(spolka=tables20b$`Nazwa AD`,
+              zmiana=gsub(",",".",tables20b$`Zmiana % AD`),
+              obroty=gsub(",",".",tables20b$`Obrót AD`)
 ) %>% 
   mutate_at(c("zmiana"),~as.numeric(substr(.,1,nchar(.)-1))) %>% 
   mutate_at(c("obroty"),~as.numeric(stri_replace_all_charclass(.,"\\p{WHITE_SPACE}","")))
@@ -645,9 +655,9 @@ n1<-tibble(
 # ))
 # n1$spolka<-names(lista)
 
-tab2<-tibble(spolka=tables0$`Nazwa AD`,
-              kurs=gsub(",",".",tables0$`Kurs AD`),
-              obroty=gsub(",",".",tables0$`Obrót AD`)
+tab2<-tibble(spolka=tables0b$`Nazwa AD`,
+              kurs=gsub(",",".",tables0b$`Kurs AD`),
+              obroty=gsub(",",".",tables0b$`Obrót AD`)
 ) %>% 
   mutate_at(c("kurs"),~as.numeric(.)) %>% 
   mutate_at(c("obroty"),~as.numeric(gsub("\\s","",.)))
@@ -694,7 +704,11 @@ n3a<-close %>%
     names_to="spolka",
     values_to="value"
                ) %>% 
-  mutate_at(c("date"),~as.Date(.))
+  mutate_at(c("date"),~as.Date(.)) %>% 
+  filter(date!=as.Date(today)) %>% 
+  add_row(
+    tab2 %>% filter(spolka %in% n2a$spolka) %>% select(c(1,2)) %>% add_column(date=as.Date(today),.before = "spolka") %>% `colnames<-`(c("date","spolka","value"))
+  )
 
 n3a$spolka<-factor(n3a$spolka,levels=unique(n3a$spolka))
 
@@ -708,7 +722,13 @@ n3b<-close %>%
     names_to="spolka",
     values_to="value"
   ) %>% 
-  mutate_at(c("date"),~as.Date(.))
+  mutate_at(c("date"),~as.Date(.)) %>% 
+  filter(date!=as.Date(today)) %>% 
+  add_row(
+    tab2 %>% filter(spolka %in% n2b$spolka) %>% select(c(1,2)) %>% add_column(date=as.Date(today),.before = "spolka") %>% `colnames<-`(c("date","spolka","value"))
+  )
+
+
 n3b$spolka<-factor(n3b$spolka,levels=unique(n3b$spolka))
 
 
@@ -775,9 +795,9 @@ nx1<-tibble(
 # ))
 # n1$spolka<-names(lista)
 
-tabx2<-tibble(spolka=tables20$`Nazwa AD`,
-             kurs=gsub(",",".",tables20$`Kurs AD`),
-             obroty=gsub(",",".",tables20$`Obrót AD`)
+tabx2<-tibble(spolka=tables20b$`Nazwa AD`,
+             kurs=gsub(",",".",tables20b$`Kurs AD`),
+             obroty=gsub(",",".",tables20b$`Obrót AD`)
 ) %>% 
   mutate_at(c("kurs"),~as.numeric(.)) %>% 
   mutate_at(c("obroty"),~as.numeric(gsub("\\s","",.)))
@@ -824,7 +844,11 @@ nx3a<-closex %>%
     names_to="spolka",
     values_to="value"
   ) %>% 
-  mutate_at(c("date"),~as.Date(.))
+  mutate_at(c("date"),~as.Date(.)) %>% 
+  filter(date!=as.Date(today)) %>% 
+  add_row(
+    tabx2 %>% filter(spolka %in% nx2a$spolka) %>% select(c(1,2)) %>% add_column(date=as.Date(today),.before = "spolka") %>% `colnames<-`(c("date","spolka","value"))
+  )
 
 nx3a$spolka<-factor(nx3a$spolka,levels=unique(nx3a$spolka))
 
@@ -838,7 +862,12 @@ nx3b<-closex %>%
     names_to="spolka",
     values_to="value"
   ) %>% 
-  mutate_at(c("date"),~as.Date(.))
+  mutate_at(c("date"),~as.Date(.)) %>% 
+  filter(date!=as.Date(today)) %>% 
+  add_row(
+    tabx2 %>% filter(spolka %in% nx2b$spolka) %>% select(c(1,2)) %>% add_column(date=as.Date(today),.before = "spolka") %>% `colnames<-`(c("date","spolka","value"))
+  )
+
 nx3b$spolka<-factor(nx3b$spolka,levels=unique(nx3b$spolka))
 
 
